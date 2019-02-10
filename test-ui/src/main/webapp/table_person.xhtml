@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Список людей</title>
+</h:head>
+
+<body>
+
+<h1 align="center">Список людей</h1>
+
+<h:form id="dataForm" widgetVar="dataForm" style="width: 70%; margin: 0 auto;">
+
+    <p:growl id="msgs" showDetail="true"/>
+
+<p:dataTable id="dataTablePerson" widgetVar="dataTablePerson" value="#{tablePersons.personList}" var="person">
+
+    <p:column>
+        <f:facet name="header">ФИО</f:facet>
+        #{person.fio}
+    </p:column>
+
+    <p:column sortBy="#{person.date}">
+        <f:facet name="header">Дата рождения</f:facet>
+        #{person.formattedDate}
+    </p:column>
+
+    <p:column>
+        <f:facet name="header">Пол</f:facet>
+        #{person.gender}
+    </p:column>
+
+    <p:column style="width:43px">
+        <p:commandButton icon="ui-icon ui-icon-pencil" update=":formEditPerson"
+                         oncomplete="PF('editPersonDialog').show();" action="#{tablePersons.setNewPerson(person)}"/>
+    </p:column>
+
+    <p:column style="width:43px">
+        <p:commandButton icon="ui-icon ui-icon-close" action="#{tablePersons.deletePerson(person)}" update=":dataForm">
+            <p:confirm header="Удаление" message='Вы уверены, что хотите удалить "#{person.fio}"?'/>
+        </p:commandButton>
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+            <p:commandButton type="button" value="Да" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+            <p:commandButton type="button" value="Нет" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+        </p:confirmDialog>
+    </p:column>
+
+    </p:dataTable>
+
+<div style="text-align: right; margin-top: 20px;">
+    <p:commandButton value="Добавить" oncomplete="PF('addPersonDialog').show();"/>
+</div>
+
+</h:form>
+
+
+<p:fragment autoUpdate="true">
+    <p:dialog id="addPersonDialog"  widgetVar="addPersonDialog"
+              width="500" header="Добавление">
+
+        <h:form id="formAddPerson" style="margin: 0 auto;">
+            <h:panelGrid columns="2" cellpadding="10">
+                <p:outputLabel for="addFio" value="ФИO:" />
+                <p:inputText id="addFio" placeholder="Фамилия Имя Отчество" required="true"
+                             value="#{tablePersons.newPerson.fio}"/>
+
+                <p:outputLabel for="addDate" value="Дата рождения:" />
+                <p:calendar id="addDate" placeholder="31.12.99" required="true" value="#{tablePersons.newPerson.date}"/>
+
+                <p:outputLabel for="addGender" value="Пол:" />
+                <p:selectOneRadio id="addGender" required="true" value="#{tablePersons.newPerson.gender}">
+                    <f:selectItem itemLabel="м" itemValue="м" />
+                    <f:selectItem itemLabel="ж" itemValue="ж" />
+                </p:selectOneRadio>
+
+            </h:panelGrid>
+
+            <p:commandButton value="Добавить" icon="ui-icon ui-icon-check"
+                             action="#{tablePersons.addPerson}" update=":dataForm"
+                             style="margin: 20px 0"/>
+
+        </h:form>
+    </p:dialog>
+</p:fragment>
+
+<p:fragment autoUpdate="true">
+    <p:dialog id="editPersonDialog" widgetVar="editPersonDialog"
+              width="500" header="Редактирование">
+
+        <h:form id="formEditPerson" style="margin: 0 auto;">
+            <p:inputText type="hidden" id="editId" value="#{tablePersons.newPerson.id}"/>
+            <h:panelGrid columns="2" cellpadding="10">
+
+                <p:outputLabel for="editFio" value="ФИO:" />
+                <p:inputText id="editFio" placeholder="Фамилия Имя Отчество" required="true"
+                             value="#{tablePersons.newPerson.fio}"/>
+
+                <p:outputLabel for="editDate" value="Дата рождения:" />
+                <p:calendar id="editDate" placeholder="31.12.99" required="true" value="#{tablePersons.newPerson.date}"/>
+
+                <p:outputLabel for="editGender" value="Пол:" />
+                <p:selectOneRadio id="editGender" required="true" value="#{tablePersons.newPerson.gender}">
+                    <f:selectItem itemLabel="м" itemValue="м" />
+                    <f:selectItem itemLabel="ж" itemValue="ж" />
+                </p:selectOneRadio>
+
+            </h:panelGrid>
+
+            <p:commandButton type="submit" value="Изменить" icon="ui-icon ui-icon-check"
+                             action="#{tablePersons.editPerson}"
+                             oncomplete="window.location.reload();"
+                             style="margin: 20px 0"/>
+
+        </h:form>
+    </p:dialog>
+</p:fragment>
+
+</body>
+</html>

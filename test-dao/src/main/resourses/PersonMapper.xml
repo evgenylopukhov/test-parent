@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//com.test.modules.dao.mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="module.dao.person.PersonMapper">
+
+    <resultMap id="person" type="module.dao.person.Person">
+        <result property="id" column="id"/>
+        <result property="fio" column="fio"/>
+        <result property="date" column="date"/>
+        <result property="gender" column="gender"/>
+    </resultMap>
+
+    <select id="selectAllPerson" resultMap="person">
+        SELECT * FROM mydb.person
+    </select>
+
+    <select id="selectPersonById" parameterType="Integer" resultMap="person">
+        SELECT * FROM mydb.person WHERE id = #{id}
+    </select>
+
+    <insert id="insertPerson" parameterType="module.dao.person.Person" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO mydb.person (fio,DATE,GENDER) VALUES (#{fio},#{date},#{gender})
+    </insert>
+
+    <update id="updatePerson" parameterType="module.dao.person.Person">
+        UPDATE mydb.person
+        SET fio = #{fio}, date = #{date}, gender = #{gender}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deletePerson" parameterType="int">
+        DELETE from mydb.person WHERE id = #{id}
+    </delete>
+</mapper>
